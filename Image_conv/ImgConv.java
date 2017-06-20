@@ -3,6 +3,9 @@ import java.io.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
 
 public class ImgConv{
 	public static void main(String args[]) throws Exception{
@@ -18,5 +21,14 @@ public class ImgConv{
 			System.out.println("File not found!!");
 			ioe.printStackTrace();
 		}
+		ImageIcon icon=new ImageIcon(img);
+		JFrame frame=new JFrame();
+        frame.setLayout(new FlowLayout());
+        frame.setSize(200,300);
+        JLabel lbl=new JLabel();
+        lbl.setIcon(icon);
+        frame.add(lbl);
+        frame.setVisible(true);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 }
