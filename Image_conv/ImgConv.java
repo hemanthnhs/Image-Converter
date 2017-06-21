@@ -9,6 +9,7 @@ import javax.swing.JLabel;
 import javax.swing.JButton;    
 import javax.swing.JTextField;    
 import java.awt.event.*;  
+import java.awt.image.*;
 
 public class ImgConv{
 	static BufferedImage img = null;
@@ -50,11 +51,9 @@ public class ImgConv{
 	            int g = color.getGreen();
 	            int b = color.getBlue();
 	            int gry = (r + g + b) / 3;
-
 	            r = g = b = gry;
 	            r = r + (sepiaDepth * 2);
 	            g = g + sepiaDepth;
-
 	            if (r > 255) {
 	                r = 255;
 	            }
@@ -64,10 +63,8 @@ public class ImgConv{
 	            if (b > 255) {
 	                b = 255;
 	            }
-
 	            // Darken blue color to increase sepia effect
 	            //b -= sepiaIntensity;
-
 	            // normalize if out of bounds
 	            if (b < 0) {
 	                b = 0;
@@ -75,12 +72,19 @@ public class ImgConv{
 	            if (b > 255) {
 	                b = 255;
 	            }
-
 	            color = new Color(r, g, b, color.getAlpha());
 	            img.setRGB(j, i, color.getRGB());
             }
          }
          return img;
+	}
+	public BufferedImage blur_fn(BufferedImage img,int width,int height){
+		float[] blurMatrix = { 1.0f / 9.0f, 1.0f / 9.0f, 1.0f / 9.0f,
+				1.0f / 9.0f, 1.0f / 9.0f, 1.0f / 9.0f, 1.0f / 9.0f,
+				1.0f / 9.0f, 1.0f / 9.0f };
+		BufferedImageOp blurFilter = new ConvolveOp(
+				new Kernel(3, 3, blurMatrix), ConvolveOp.EDGE_NO_OP, null);
+		return blurFilter.filter(img, null);
 	}
 	public static void main(String args[]) throws Exception{
 		System.out.println("Enter File name :");
@@ -90,7 +94,6 @@ public class ImgConv{
 		
 		try {
 		    img = ImageIO.read(new File(img_name));
-		    System.out.println("done");
 		} catch (IOException ioe) {
 			System.out.println("File not found!!");
 			ioe.printStackTrace();
@@ -105,13 +108,13 @@ public class ImgConv{
         JButton b=new JButton("Grayscale");
         JButton c=new JButton("Black and White");
         JButton d=new JButton("Sepia Tone");
-        JButton e=new JButton("Blur");
+        JButton blur_btn=new JButton("Blur");
         b.setBounds(50,100,95,30);
         ImageIcon icon=new ImageIcon(img);
         frame.add(b);  
         frame.add(c);
         frame.add(d);
-        
+        frame.add(blur_btn);
         JLabel lbl=new JLabel();
         lbl.setIcon(icon);
         frame.add(lbl);
@@ -119,14 +122,12 @@ public class ImgConv{
         b.addActionListener(new ActionListener(){  
 			public void actionPerformed(ActionEvent e){  
 						frame.getContentPane().removeAll();
-          				System.out.println("yoo");
           				img= new ImgConv().grayscale_fn(img,width,height);
-          				System.out.println("yoo2");
           				frame.remove(lbl);
           				frame.add(b);  
         				frame.add(c);
         				frame.add(d);
-        				
+        				frame.add(blur_btn);
 				        JLabel lbl=new JLabel();
 				        lbl.setIcon(icon);
 				        frame.add(lbl);
@@ -145,7 +146,7 @@ public class ImgConv{
           				frame.add(b);  
         				frame.add(c);
         				frame.add(d);
-        				
+        				frame.add(blur_btn);
 				        JLabel lbl=new JLabel();
 				        lbl.setIcon(icon);
 				        frame.add(lbl);
@@ -163,7 +164,26 @@ public class ImgConv{
           				frame.add(b);  
         				frame.add(c);
         				frame.add(d);
-        				
+        				frame.add(blur_btn);
+				        JLabel lbl=new JLabel();
+				        lbl.setIcon(icon);
+				        frame.add(lbl);
+				        frame.setVisible(true);
+        				frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+			        }
+			    });
+         blur_btn.addActionListener(new ActionListener(){  
+			public void actionPerformed(ActionEvent e){  
+						frame.getContentPane().removeAll();
+          				System.out.println("yoo");
+          				img= new ImgConv().blur_fn(img,width,height);
+          				ImageIcon icon=new ImageIcon(img);
+          				System.out.println("yoo2");
+          				frame.remove(lbl);
+          				frame.add(b);  
+        				frame.add(c);
+        				frame.add(d);
+        				frame.add(blur_btn);
 				        JLabel lbl=new JLabel();
 				        lbl.setIcon(icon);
 				        frame.add(lbl);
