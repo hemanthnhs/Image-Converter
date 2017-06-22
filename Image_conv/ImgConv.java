@@ -13,6 +13,7 @@ import java.awt.image.*;
 
 public class ImgConv{
 	static BufferedImage img = null;
+	static BufferedImage org_img;
 	public BufferedImage grayscale_fn(BufferedImage img,int width,int height){
 		for(int i=0; i<height; i++){
             for(int j=0; j<width; j++){
@@ -94,6 +95,12 @@ public class ImgConv{
 		
 		try {
 		    img = ImageIO.read(new File(img_name));
+		    System.out.println("File not found!!"+img);
+		    //org_img = ImageIO.read(new File(img_name));
+		    ColorModel model = img.getColorModel();
+			WritableRaster raster = img.copyData(null);
+			org_img = new BufferedImage(model, raster, model.isAlphaPremultiplied(), null);
+		    System.out.println("File not found!!"+org_img);
 		} catch (IOException ioe) {
 			System.out.println("File not found!!");
 			ioe.printStackTrace();
@@ -109,12 +116,14 @@ public class ImgConv{
         JButton c=new JButton("Black and White");
         JButton d=new JButton("Sepia Tone");
         JButton blur_btn=new JButton("Blur");
+        JButton orgnl_btn=new JButton("Restore Original");
         b.setBounds(50,100,95,30);
         ImageIcon icon=new ImageIcon(img);
         frame.add(b);  
         frame.add(c);
         frame.add(d);
         frame.add(blur_btn);
+        frame.add(orgnl_btn);
         JLabel lbl=new JLabel();
         lbl.setIcon(icon);
         frame.add(lbl);
@@ -122,12 +131,14 @@ public class ImgConv{
         b.addActionListener(new ActionListener(){  
 			public void actionPerformed(ActionEvent e){  
 						frame.getContentPane().removeAll();
-          				img= new ImgConv().grayscale_fn(img,width,height);
+          				BufferedImage edited_img= new ImgConv().grayscale_fn(img,width,height);
+          				ImageIcon icon=new ImageIcon(edited_img);
           				frame.remove(lbl);
           				frame.add(b);  
         				frame.add(c);
         				frame.add(d);
         				frame.add(blur_btn);
+        				frame.add(orgnl_btn);
 				        JLabel lbl=new JLabel();
 				        lbl.setIcon(icon);
 				        frame.add(lbl);
@@ -140,13 +151,15 @@ public class ImgConv{
 			public void actionPerformed(ActionEvent e){  
 						frame.getContentPane().removeAll();
           				System.out.println("yoo");
-          				img= new ImgConv().bwscale_fn(img,width,height);
+          				BufferedImage edited_img= new ImgConv().bwscale_fn(img,width,height);
+          				ImageIcon icon=new ImageIcon(edited_img);
           				System.out.println("yoo2");
           				frame.remove(lbl);
           				frame.add(b);  
         				frame.add(c);
         				frame.add(d);
         				frame.add(blur_btn);
+        				frame.add(orgnl_btn);
 				        JLabel lbl=new JLabel();
 				        lbl.setIcon(icon);
 				        frame.add(lbl);
@@ -158,13 +171,15 @@ public class ImgConv{
 			public void actionPerformed(ActionEvent e){  
 						frame.getContentPane().removeAll();
           				System.out.println("yoo");
-          				img= new ImgConv().sepiaScale_fn(img,width,height);
+          				BufferedImage edited_img= new ImgConv().sepiaScale_fn(img,width,height);
+          				ImageIcon icon=new ImageIcon(edited_img);
           				System.out.println("yoo2");
           				frame.remove(lbl);
           				frame.add(b);  
         				frame.add(c);
         				frame.add(d);
         				frame.add(blur_btn);
+        				frame.add(orgnl_btn);
 				        JLabel lbl=new JLabel();
 				        lbl.setIcon(icon);
 				        frame.add(lbl);
@@ -176,16 +191,34 @@ public class ImgConv{
 			public void actionPerformed(ActionEvent e){  
 						frame.getContentPane().removeAll();
           				System.out.println("yoo");
-          				img= new ImgConv().blur_fn(img,width,height);
-          				ImageIcon icon=new ImageIcon(img);
+          				BufferedImage edited_img= new ImgConv().blur_fn(img,width,height);
+          				ImageIcon icon=new ImageIcon(edited_img);
           				System.out.println("yoo2");
           				frame.remove(lbl);
           				frame.add(b);  
         				frame.add(c);
         				frame.add(d);
         				frame.add(blur_btn);
+        				frame.add(orgnl_btn);
 				        JLabel lbl=new JLabel();
 				        lbl.setIcon(icon);
+				        frame.add(lbl);
+				        frame.setVisible(true);
+        				frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+			        }
+			    });
+         orgnl_btn.addActionListener(new ActionListener(){  
+			public void actionPerformed(ActionEvent e){  
+						frame.getContentPane().removeAll();
+          				ImageIcon org_icon=new ImageIcon(org_img);
+          				frame.remove(lbl);
+          				frame.add(b);  
+        				frame.add(c);
+        				frame.add(d);
+        				frame.add(blur_btn);
+        				frame.add(orgnl_btn);
+				        JLabel lbl=new JLabel();
+				        lbl.setIcon(org_icon);
 				        frame.add(lbl);
 				        frame.setVisible(true);
         				frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
